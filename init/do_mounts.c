@@ -395,7 +395,7 @@ retry:
 			case -EINVAL:
 				continue;
 		}
-	        /*
+        /*
 		 * Allow the user to distinguish between failed sys_open
 		 * and bad superblock on root device.
 		 * and give them a list of the available devices

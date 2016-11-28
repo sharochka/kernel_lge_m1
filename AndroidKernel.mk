@@ -62,7 +62,7 @@ ifeq ($(TARGET_USES_UNCOMPRESSED_KERNEL),true)
 $(info Using uncompressed kernel)
 TARGET_PREBUILT_INT_KERNEL := $(KERNEL_OUT)/arch/$(KERNEL_ARCH)/boot/Image
 else
-TARGET_PREBUILT_INT_KERNEL := $(KERNEL_OUT)/arch/$(KERNEL_ARCH)/boot/zImage
+TARGET_PREBUILT_INT_KERNEL := $(KERNEL_OUT)/arch/$(KERNEL_ARCH)/boot/Image.gz
 endif
 
 ifeq ($(TARGET_KERNEL_APPEND_DTB), true)
@@ -92,10 +92,6 @@ mpath=`dirname $$mdpath`; rm -rf $$mpath;\
 fi
 endef
 
-ifeq ($(INIT_BOOTCHART2), true)
-KERNEL_CONFIG_OVERRIDE_FILES += bootchart2_defconfig
-endif
-
 $(KERNEL_OUT):
 	mkdir -p $(KERNEL_OUT)
 
@@ -105,11 +101,6 @@ $(KERNEL_CONFIG): $(KERNEL_OUT)
 			echo "Overriding kernel config with '$(KERNEL_CONFIG_OVERRIDE)'"; \
 			echo $(KERNEL_CONFIG_OVERRIDE) >> $(KERNEL_OUT)/.config; \
 			$(MAKE) -C kernel O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(KERNEL_CROSS_COMPILE) oldconfig; fi
-	$(hide) if [ ! -z "$(KERNEL_CONFIG_OVERRIDE_FILES)" ]; then \
-			echo "Overriding kernel config with '$(KERNEL_CONFIG_OVERRIDE_FILES)'"; \
-			for override_file in $(KERNEL_CONFIG_OVERRIDE_FILES); \
-				do cat kernel/arch/${KERNEL_ARCH}/configs/$$override_file >> $(KERNEL_OUT)/.config; done; \
-			$(MAKE) -C kernel O=../$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(KERNEL_CROSS_COMPILE) olddefconfig; fi
 
 $(TARGET_PREBUILT_INT_KERNEL): $(KERNEL_OUT) $(KERNEL_HEADERS_INSTALL)
 	$(hide) echo "Building kernel..."

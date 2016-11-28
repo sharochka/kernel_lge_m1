@@ -385,4 +385,4 @@ config LGE_QFPROM_SECHASH
 	  LGE QFPROM DRIVER-SEC partition's hash value.
 endmenu
 
-source "drivers/soc/qcom/lge/power/Kconfig
+source "drivers/soc/qcom/lge/power/Kconfig"

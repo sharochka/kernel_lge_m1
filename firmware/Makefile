@@ -34,7 +34,7 @@ fw-shipped-$(CONFIG_MACH_MSM8909_M1_SPR_US) += $(mit200_firmware)
 endif
 
 ifdef CONFIG_MACH_MSM8909_M1_TMO_US
-mit200_fw_file := $(wildcard $(srctree)/firmware/melfas/m1_spr_us/*)
+mit200_fw_file := $(wildcard $(srctree)/firmware/melfas/m1_tmo_us/*)
 mit200_firmware := $(subst $(srctree)/firmware/,,$(mit200_fw_file))
 fw-shipped-$(CONFIG_MACH_MSM8909_M1_TMO_US) += $(mit200_firmware)
 endif
@@ -67,7 +67,6 @@ ifdef CONFIG_TOUCHSCREEN_LGE_MELFAS
 mit200_ihex_list := $(subst .ihex, , $(notdir $(wildcard $(srctree)/firmware/melfas/mit200/lgps22/*.ihex)))
 mit200_ihex_files := $(foreach var, $(mit200_ihex_list), melfas/mit200/lgps22/$(var))
 fw-shipped-$(CONFIG_TOUCHSCREEN_LGE_MELFAS) += $(mit200_ihex_files)
-
 endif
 
 ifdef CONFIG_TOUCHSCREEN_MIT300
@@ -217,8 +216,8 @@ quiet_cmd_mkdir = MKDIR   $(patsubst $(objtree)/%,%,$@)
 quiet_cmd_ihex  = IHEX    $@
       cmd_ihex  = $(OBJCOPY) -Iihex -Obinary $< $@
 
-quiet_cmd_copy  = COPY    $@
-      cmd_copy  = cp $(srctree)/$@ $@
+quiet_cmd_copy  = COPY    $@ $(srctree) $(objtree)
+      cmd_copy  = cp -u $(srctree)/$@ $@
 
 quiet_cmd_ihex2fw  = IHEX2FW $@
       cmd_ihex2fw  = $(objtree)/$(obj)/ihex2fw $< $@
@@ -296,8 +295,9 @@ ifneq ($(objtree),$(srctree))
 endif
 
 $(obj)/%.txt: $(objtree)/$(obj)/$$(dir %.txt)
+ifneq ($(objtree),$(srctree))
 	$(call cmd,copy)
-
+endif
 # Don't depend on ihex2fw if we're installing and it already exists.
 # Putting it after | in the dependencies doesn't seem sufficient when
 # we're installing after a cross-compile, because ihex2fw has dependencies

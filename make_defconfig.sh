@@ -14,14 +14,15 @@ fi
 
 # make .config
 env KCONFIG_NOTIMESTAMP=true \
-make ARCH=arm CROSS_COMPILE=arm-eabi- ${DEFCONFIG_FILE}
+make -d ARCH=arm CROSS_COMPILE=arm-eabi- ${DEFCONFIG_FILE}
 
 # run menuconfig
 env KCONFIG_NOTIMESTAMP=true \
-make menuconfig ARCH=arm
+make -d menuconfig ARCH=arm
 
-make savedefconfig ARCH=arm
+make -d savedefconfig ARCH=arm
 # copy .config to defconfig
-mv defconfig arch/arm/configs/${DEFCONFIG_FILE}
+#mv defconfig arch/arm/configs/${DEFCONFIG_FILE}
+
 # clean kernel object
 make mrproper
